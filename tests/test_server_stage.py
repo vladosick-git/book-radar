@@ -162,6 +162,8 @@ def test_vault_roundtrip_wrong_key_and_session_migration(data, monkeypatch):
     from cryptography.fernet import Fernet
     key = data / 'vault.key'
     key.write_bytes(Fernet.generate_key())
+    # Build the pre-vault fixture independently of a key inherited from CI.
+    monkeypatch.setattr(config, 'VAULT_KEY_FILE', '')
     legacy = protection.protect(b'{"cookies": [{"name": "a", "value": "1"}], "origins": []}')  # DPAPI on Windows, plain elsewhere
     (data / 'profiles' / '7').mkdir(parents=True)
     (data / 'profiles' / '7' / ('radar-state.dpapi' if legacy.startswith(protection.PREFIX) else 'radar-state.json')).write_bytes(legacy)
