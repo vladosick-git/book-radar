@@ -1,0 +1,60 @@
+# Запуск: cd deploy && cp .env.example .env (заполнить) && docker compose up -d --build
+# API и worker — разные процессы: закрытие панели и перезапуск API не останавливают сбор.
+name: book-radar
+x-app: &app
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile
+    args:
+      RADAR_BROWSER: ${RADAR_BROWSER:-yandex}
+  # RADAR_VERSION in .env picks the image: the previous tag stays available for a rollback (deploy/README_SERVER.md).
+  image: book-radar:${RADAR_VERSION:-0.8.2}
+  env_file: .env
+  volumes:
+    - radar-data:/data
+    - ./secrets:/run/radar:ro
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *app
+    environment: { RADAR_EMBEDDED_WORKER: "0" }
+    expose: ["8765"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/api/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    <<: *app
+    command: ["python", "-m", "backend.worker"]
+    shm_size: "1gb"           # Chromium needs more than the 64 MB default
+    stop_grace_period: 60s    # SIGTERM: the run is marked interrupted and resumes after restart
+    healthcheck:
+      test: ["CMD", "python", "-m", "backend.worker", "--health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backup:
+    <<: *app
+    command: ["sh", "-c", "while true; do python -m backend.backup create /backups --keep ${RADAR_BACKUP_KEEP:-7}; sleep 86400; done"]
+    volumes:
+      - radar-data:/data        # rw: SQLite WAL needs its -shm file even for reading
+      - radar-backups:/backups
+
+  caddy:
+    image: caddy:2.10.2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment: { RADAR_DOMAIN: "${RADAR_DOMAIN}" }
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [api]
+
+volumes:
+  radar-data:
+  radar-backups:
+  caddy-data:

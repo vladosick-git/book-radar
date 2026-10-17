@@ -1,0 +1,13 @@
+.at-onboarding { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.at-onboarding > * { min-width: 0; max-width: 100%; }
+.at-onboarding > form { padding: 0; overflow: visible; grid-template-columns: minmax(0, 1fr); }
+.at-onboarding .form-actions { position: static; margin: 0; padding: 8px 0 0; flex-wrap: wrap; background: none; }
+.at-onboarding .form-actions .btn { white-space: normal; overflow-wrap: anywhere; min-width: 0; }
+.at-onboarding .check { flex-wrap: wrap; overflow-wrap: anywhere; }
+@media (max-width: 520px) {
+  .at-onboarding > .form-actions { flex-direction: column; align-items: stretch; }
+  .at-onboarding > .form-actions .btn { flex: none; min-height: 36px; }
+}
+.at-remote { display: grid; gap: 14px; padding: 18px 0; border-block: 1px solid var(--line); }
+.at-remote-screen { width: 100%; overflow: auto; border: 1px solid var(--line); }
+.at-remote-screen img { display: block; width: 100%; height: auto; cursor: crosshair; }

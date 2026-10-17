@@ -1,0 +1,63 @@
+.bots-page { min-width: 0; }
+.bot-overview { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin: 24px 0 16px; }
+.bot-overview > div { display: flex; flex-direction: column; gap: 5px; padding: 18px 20px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; }
+.bot-overview strong { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.bot-overview span { font-size: 12px; color: var(--muted); }
+.bot-worker-line { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 22px; }
+.bot-controls { display: flex; gap: 14px; margin: 18px 0 14px; }
+.bot-controls .search { flex: 1; }
+.bot-batch-bar { display: flex; gap: 16px; justify-content: space-between; align-items: center; padding: 12px 16px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; }
+.bot-inline-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bot-batch-help { margin: 10px 0 18px; }
+.bot-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; list-style: none; padding: 0; margin: 0; }
+.bot-card { min-width: 0; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 20px; }
+.bot-card-heading { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; }
+.bot-card-heading .check { align-items: flex-start; min-width: 0; }
+.bot-card-heading strong { font-size: 17px; overflow-wrap: anywhere; }
+.bot-state { font-size: 11px; padding: 4px 7px; border-radius: 4px; background: var(--neutral-bg); color: var(--muted); white-space: nowrap; }
+.bot-state-running,.bot-state-queued { color: var(--accent); background: var(--accent-soft); }
+.bot-state-expired { color: var(--warning); background: var(--warning-bg); }
+.bot-card-meta { display: grid; grid-template-columns: 76px minmax(0,1fr); gap: 10px 12px; margin: 21px 0; font-size: 12px; }
+.bot-card-meta dt { color: var(--muted); }
+.bot-card-meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.bot-card-actions { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 16px; border-top: 1px solid var(--line); }
+.bot-detail-summary { display: flex; gap: 12px; flex-wrap: wrap; padding: 16px 24px 0; }
+.bot-detail-tabs { display: flex; gap: 5px; padding: 16px 24px 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.bot-detail-tabs button { background: transparent; border: 0; padding: 10px 12px; white-space: nowrap; color: var(--muted); border-bottom: 2px solid transparent; }
+.bot-detail-tabs [aria-selected=true] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.bot-details [role=tabpanel] { padding: 4px 24px 20px; }
+.bot-detail-section { padding: 18px 0; }
+.bot-detail-section + .bot-detail-section { border-top: 1px solid var(--line); }
+.bot-detail-section h3 { margin-bottom: 12px; font-size: 16px; }
+.bot-subsection { padding: 13px 0; border-bottom: 1px solid var(--line); }
+.bot-subsection > summary { cursor: pointer; font-weight: 600; margin-bottom: 10px; overflow-wrap: anywhere; }
+.bot-subsection summary small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; margin: 5px 0; }
+.bot-site-assign { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px; align-items: end; padding-top: 18px; }
+.bot-mailbox { display: flex; align-items: flex-start; flex-direction: column; gap: 7px; padding: 12px 0; overflow-wrap: anywhere; }
+.bot-mailbox > strong { max-width: 100%; }
+.bot-secret { border: 1px solid var(--warning-line); padding: 12px; margin: 12px 0; }
+.bot-section-title { display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; align-items: baseline; margin-bottom: 10px; }
+.bot-job { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.bot-detail-footer { padding: 12px 24px 20px; border-top: 1px solid var(--line); }
+.bot-details .session-panel { margin-top: 18px; grid-template-columns: minmax(0,1fr); }
+.bot-details .session-panel > .row-actions { grid-area: auto; }
+.bot-details .at-onboarding { padding: 10px 0 0; }
+.bot-details .notice { margin: 10px 0; }
+.bot-setup-actions { margin: 0 0 18px; }
+.bots-page .bot-card-meta { font-size: 14px; }
+.bots-page .bot-state { font-size: 13px; }
+.bots-page .bot-card-actions .btn { font-size: 14px; min-height: 38px; }
+.bots-page .bot-card .meta { font-size: 13px; }
+@media (max-width: 1050px) { .bot-grid { grid-template-columns: 1fr; } .bot-overview { gap: 9px; } .bot-overview > div { padding: 15px 13px; } }
+@media (max-width: 600px) {
+  .bot-overview { grid-template-columns: repeat(2,minmax(0,1fr)); margin-top: 18px; }
+  .bot-overview strong { font-size: 25px; }
+  .bot-controls { flex-direction: column; gap: 8px; } .bot-controls .search, .bot-controls .select { flex: 0 0 auto; max-width: none; width: 100%; } .bot-controls .select select { width: 100%; max-width: none; }
+  .bot-batch-bar { align-items: flex-start; flex-direction: column; gap: 10px; padding: 12px; }
+  .bot-card { padding: 16px; } .bot-card-heading { flex-wrap: wrap; }
+  .bot-card-heading strong { font-size: 16px; } .bot-card-meta { margin: 16px 0; }
+  .bot-card-actions { gap: 7px; } .bot-card-actions .btn { flex: 1 1 auto; }
+  .bot-detail-tabs { padding: 12px 16px 0; } .bot-detail-tabs button { padding: 10px 8px; font-size: 12px; }
+  .bot-detail-summary { padding: 14px 16px 0; } .bot-details [role=tabpanel] { padding: 4px 16px 16px; }
+  .bot-site-assign { grid-template-columns: 1fr; } .bot-detail-footer { padding: 12px 16px 18px; }
+}

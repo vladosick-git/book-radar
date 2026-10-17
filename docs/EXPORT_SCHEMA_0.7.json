@@ -1,0 +1,398 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "book-radar/findings-export/1",
+  "title": "Книжный радар: экспорт находок (GET /api/export.json), schema_version 1",
+  "description": "Три уровня. ad - объявление (креатив): нормализованные заголовок, изображение и ссылка; семья (family_key) объединяет креативы одной ссылки, вариант - изменённый заголовок или изображение. finding - размещение: точный блок на одной странице у одного профиля (ID совпадают с 0.6). observation - одно обнаружение (только при ?observations=true). Время - ISO 8601 UTC. Фильтры запроса те же, что у GET /api/findings: q, profile_id, job_id, source, kind, since, until.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "app_version",
+    "exported_at",
+    "filters",
+    "counts",
+    "ads",
+    "findings"
+  ],
+  "properties": {
+    "schema": {
+      "const": "book-radar/findings-export"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "app_version": {
+      "type": "string"
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "filters": {
+      "type": "object",
+      "description": "Только непустые фильтры запроса; since/until уже приведены к UTC, until - не включительно."
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "ads",
+        "findings"
+      ],
+      "properties": {
+        "ads": {
+          "type": "integer"
+        },
+        "findings": {
+          "type": "integer"
+        },
+        "observations": {
+          "type": "integer"
+        }
+      }
+    },
+    "ads": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ad"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/observation"
+      }
+    }
+  },
+  "$defs": {
+    "kind": {
+      "enum": [
+        "banner",
+        "text",
+        "mixed",
+        "link",
+        "iframe"
+      ],
+      "description": "banner - изображение без текста; text - текст без изображения; mixed - оба; link - только ссылка; iframe - закрытый рекламный фрейм."
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ad": {
+      "type": "object",
+      "required": [
+        "id",
+        "family_key",
+        "variant_no",
+        "variant_of",
+        "variant_reason",
+        "title",
+        "text",
+        "destination",
+        "image_url",
+        "kind",
+        "first_seen",
+        "last_seen",
+        "sightings"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "family_key": {
+          "type": "string",
+          "description": "dest:<нормализованная ссылка> или ad:<ключ>, если ссылки нет"
+        },
+        "variant_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "variant_of": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "description": "ID первого варианта семьи; null у первого"
+        },
+        "variant_reason": {
+          "type": "string",
+          "description": "'' у первого варианта; иначе title, image или title,image - что отличается от предыдущего варианта"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "description": "Текст при первом обнаружении (очищенный, если был)"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/kind"
+        },
+        "first_seen": {
+          "$ref": "#/$defs/time"
+        },
+        "last_seen": {
+          "$ref": "#/$defs/time"
+        },
+        "sightings": {
+          "type": "integer",
+          "description": "Сумма обнаружений всех размещений креатива"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": [
+        "id",
+        "ad_id",
+        "profile_id",
+        "profile_name",
+        "job_id",
+        "title",
+        "text",
+        "clean_text",
+        "destination",
+        "image_url",
+        "source_url",
+        "source_host",
+        "frame_url",
+        "kind",
+        "image_source",
+        "field_sources",
+        "ocr_text",
+        "ocr_status",
+        "first_seen",
+        "last_seen",
+        "sightings",
+        "first_screenshot",
+        "screenshot",
+        "crop",
+        "block_type",
+        "block_reason",
+        "adapter",
+        "block_evidence",
+        "original_title",
+        "is_test",
+        "duplicate_of",
+        "destination_status"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "ad_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "profile_id": {
+          "type": "integer"
+        },
+        "profile_name": {
+          "type": "string"
+        },
+        "job_id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "description": "Исходный текст DOM (innerText блока), как в 0.6"
+        },
+        "clean_text": {
+          "type": "string",
+          "description": "Этап 13: очищенный текст - без пустых строк, повторов и меток «Реклама»; '' у записей до 0.7.0"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string",
+          "description": "img или CSS-фон; у закрытого фрейма - адрес его содержимого"
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "source_host": {
+          "type": "string"
+        },
+        "frame_url": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/kind"
+        },
+        "image_source": {
+          "enum": [
+            "img",
+            "css",
+            "canvas",
+            "iframe",
+            "none",
+            ""
+          ],
+          "description": "'' - запись до 0.7.0"
+        },
+        "field_sources": {
+          "type": "object",
+          "description": "Откуда взято каждое поле: title (heading, link, text, alt, fallback), text (dom, none), destination (self, link, none), image (img, css, canvas, iframe, none), frame_src"
+        },
+        "ocr_text": {
+          "type": "string"
+        },
+        "ocr_status": {
+          "enum": [
+            "",
+            "done",
+            "empty",
+            "off",
+            "missing",
+            "error",
+            "timeout"
+          ]
+        },
+        "first_seen": {
+          "$ref": "#/$defs/time"
+        },
+        "last_seen": {
+          "$ref": "#/$defs/time"
+        },
+        "sightings": {
+          "type": "integer"
+        },
+        "first_screenshot": {
+          "type": "string"
+        },
+        "screenshot": {
+          "type": "string"
+        },
+        "crop": {
+          "type": "string",
+          "description": "Этап 13: снимок только блока; '' если не снят"
+        },
+        "block_type": {
+          "enum": [
+            "ad",
+            "recommendation",
+            "unknown"
+          ],
+          "description": "Этап 11: ad - доказанная реклама (маркировка «Реклама», erid, рекламная сеть); recommendation - известный собственный блок сайта; unknown - нужна проверка человеком"
+        },
+        "block_reason": {
+          "type": "string",
+          "description": "Причина решения о типе блока"
+        },
+        "adapter": {
+          "type": "string",
+          "description": "<adapter_id>@<версия>, legacy - запись до этапа 11"
+        },
+        "block_evidence": {
+          "type": "object",
+          "description": "Признаки, по которым принято решение: label, erid, hosts, markers, work_links"
+        },
+        "original_title": {
+          "type": "string"
+        },
+        "is_test": {
+          "type": "boolean"
+        },
+        "duplicate_of": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "destination_status": {
+          "type": "string",
+          "enum": [
+            "tracking_link",
+            "available",
+            "not_detected"
+          ]
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "required": [
+        "id",
+        "finding_id",
+        "ad_id",
+        "profile_id",
+        "job_id",
+        "run_id",
+        "source_url",
+        "seen_at",
+        "screenshot",
+        "count",
+        "legacy"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "finding_id": {
+          "type": "integer"
+        },
+        "ad_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "profile_id": {
+          "type": "integer"
+        },
+        "job_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "run_id": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "source_url": {
+          "type": "string"
+        },
+        "seen_at": {
+          "$ref": "#/$defs/time"
+        },
+        "screenshot": {
+          "type": "string",
+          "description": "Снимок страницы; файл мог быть удалён очисткой старых снимков"
+        },
+        "count": {
+          "type": "integer",
+          "description": "1 для новых; у перенесённых из 0.6 записей last - число обнаружений между первым и последним"
+        },
+        "legacy": {
+          "enum": [
+            null,
+            "first",
+            "last"
+          ],
+          "description": "Перенесено из 0.6: first - первое обнаружение, last - последнее и все промежуточные"
+        }
+      }
+    }
+  }
+}

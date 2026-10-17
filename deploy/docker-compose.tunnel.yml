@@ -1,0 +1,7 @@
+# Режим без домена: панель доступна только через SSH-туннель исполнителя/владельца.
+# API публикуется на loopback сервера (127.0.0.1), снаружи порт не виден; Caddy в этом режиме не запускается.
+#   docker compose -f docker-compose.yml -f docker-compose.tunnel.yml up -d api worker backup
+#   на своём компьютере: ssh -N -L 8765:127.0.0.1:8765 <пользователь>@<IP>  → http://localhost:8765
+services:
+  api:
+    ports: ["127.0.0.1:8765:8765"]
